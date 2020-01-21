@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.laotang.quickdev.localretrofit" >
+    <application>
+        <provider
+                android:authorities="${applicationId}.quick-local_retrofit-provider"
+                android:name="com.laotang.quickdev.localretrofit.InitProvider"
+                android:multiprocess="true"
+                android:exported="false"/>
+    </application>
+</manifest>

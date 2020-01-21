@@ -1,0 +1,22 @@
+include ':app'
+include ':quickDevShapeWidget'
+include ':quickDevRxActivity'
+include ':quickDevLocalRetrofit'
+include ':quickDevARetrofit',':quickDevARouterCallAdapter'
+include ':quickDevDiskLoggerHelp'
+include ':quickDevLogEvent'
+include ':quickDevARouterReflect'
+include ':quickDevAutoBackup'
+include ':quickDevOkhttpSafety'
+
+
+include ':quickDevCore2'
+include ':quickDevMvp2'
+include ':quickDevMVVM2'
+include ':quickDevImageLoader2'
+include ':quickDevComponent2'
+include ':quickExtKt2'
+
+include ':autoregister'
+
+rootProject.name='QuickDevLibStore'

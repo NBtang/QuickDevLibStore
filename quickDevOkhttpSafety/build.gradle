@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+apply plugin: 'maven'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly libs.okhttp
+}
+
+repositories {
+    mavenCentral()
+}
+
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            //设置插件的GAV参数
+//            pom.groupId = 'com.tang.quickdev'
+//            pom.artifactId = 'okhttp-safety'
+//            pom.version = '1.0.4'
+//            //文件发布到下面目录
+//            repository(url: "http://www.isirui.top:18081/nexus/repository/android/") {
+//                authentication(userName: "${getNexusUserName()}", password: "${getNexusPassWord()}") //账号，密码
+//            }
+//        }
+//    }
+//}
+
+apply from: "bintray-config.gradle"
