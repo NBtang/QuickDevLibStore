@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.Postcard;
+import com.alibaba.android.arouter.facade.callback.NavCallback;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.laotang.quickdev.rxactivity.RxReportFragment;
 
@@ -30,7 +31,24 @@ public class RxARouterActivity extends Activity {
         if (isGreenChannel) {
             postcard.greenChannel();
         }
-        postcard.navigation(this, RxReportFragment.RX_ACTIVITY_RESULT_REQUEST_CODE);
+        postcard.navigation(this, RxReportFragment.RX_ACTIVITY_RESULT_REQUEST_CODE, new NavCallback(){
+
+            @Override
+            public void onArrival(Postcard postcard) {
+
+            }
+
+            @Override
+            public void onLost(Postcard postcard) {
+                finish();
+            }
+
+            @Override
+            public void onInterrupt(Postcard postcard) {
+                finish();
+            }
+
+        });
     }
 
     @Override

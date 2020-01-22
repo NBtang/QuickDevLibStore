@@ -6,7 +6,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'arouter-calladapter'
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4'
 
     libraryName = 'arouter-calladapter'
     libraryDescription = ''
