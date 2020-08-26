@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import androidx.lifecycle.ViewModelStoreOwner
+import com.laotang.quickdevcore.utils.rootKodein
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.android.lifecycle.scope
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
 import java.lang.AssertionError
 
 abstract class BaseFragment : Fragment(), IFragment {
@@ -22,9 +21,8 @@ abstract class BaseFragment : Fragment(), IFragment {
     private var baseView: View? = null
     private var firstViewCreated = false
 
-    private val parentKodein: Kodein = obtainAppKodeinAware().kodein
-
-    override val kodein: Kodein = Kodein {
+    override val kodein: Kodein = Kodein.lazy {
+        val parentKodein: Kodein = rootKodein()
         extend(parentKodein)
         if (this@BaseFragment.javaClass.isAnnotationPresent(Module::class.java)) {
             val module = this@BaseFragment.javaClass.getAnnotation(Module::class.java)
@@ -37,9 +35,6 @@ abstract class BaseFragment : Fragment(), IFragment {
             }
         }
         bind<BaseFragment>() with instance(this@BaseFragment)
-        bind<FragmentActivity>() with provider {
-            this@BaseFragment.requireActivity()
-        }
     }
 
     protected val scopeProvider: ScopeProvider by lazy {
@@ -100,10 +95,11 @@ abstract class BaseFragment : Fragment(), IFragment {
 
     open fun enableView(): Boolean = true
 
-    open fun <P : BasePresenter<*>> providePresenter(
+    open fun <P : IPresenter<*>> providePresenter(
         clazz: Class<P>,
-        fragment: Fragment? = null
+        viewModelStoreOwner: ViewModelStoreOwner? = null,
+        factory: PresenterProviders.Factory? = null
     ): P {
-        return PresenterProviders.of(fragment ?: this).get(clazz)
+        return PresenterProviders.of(viewModelStoreOwner ?: this, factory).get(clazz)
     }
 }

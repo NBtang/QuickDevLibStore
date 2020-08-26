@@ -1,7 +1,7 @@
 package com.laotang.quickdevcore.di.module
 
-import android.app.Application
 import android.content.Context
+import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.laotang.quickdev.localretrofit.LocalRetrofit
 import com.laotang.quickdev.localretrofit.converter.JsonConverterFactory
@@ -45,9 +45,9 @@ class ClientModule {
                     val builder = instance<RxCache.Builder>()
                     val configuration = instance<GlobalConfigModule>().provideRxCacheConfiguration()
                     if (configuration != null) {
-                        rxCache = configuration.configRxCache(instance<Application>(), builder)
+                        rxCache = configuration.configRxCache(instance<Context>(tag = "applicationContext"), builder)
                     }
-                    rxCache?:builder.persistence(instance(tag = "rxCacheDirectory"), GsonSpeaker(instance()))
+                    rxCache?:builder.persistence(instance(tag = "rxCacheDirectory"), GsonSpeaker(instance<Gson>()))
                 }
 
                 bind<Retrofit.Builder>() with provider { Retrofit.Builder() }
@@ -61,7 +61,7 @@ class ClientModule {
                 bind<RxErrorHandler>() with singleton {
                     RxErrorHandler
                             .builder()
-                            .with(instance<Application>())
+                            .with(instance<Context>(tag = "applicationContext"))
                             .responseErrorListener(instance<GlobalConfigModule>().provideResponseErrorListener())
                             .build()
                 }
@@ -69,17 +69,17 @@ class ClientModule {
                 bind<Retrofit>() with singleton {
                     instance<Retrofit.Builder>()
                             .baseUrl(instance<GlobalConfigModule>().provideBaseUrl())
-                            .client(instance())
+                            .client(instance<OkHttpClient>())
                             .apply {
                                 instance<GlobalConfigModule>().provideRetrofitConfigurations()?.run {
                                     forEach {
-                                        it.configRetrofit(instance<Application>(),this@apply)
+                                        it.configRetrofit(instance<Context>(tag = "applicationContext"),this@apply)
                                     }
                                 }
                             }
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                            .addConverterFactory(GsonConverterFactory.create(instance()))
+                            .addConverterFactory(GsonConverterFactory.create(instance<Gson>()))
                             .build()
                 }
 
@@ -100,7 +100,7 @@ class ClientModule {
                                 RetrofitUrlManager.getInstance().with(this)
                                 instance<GlobalConfigModule>().provideOkHttpConfigurations()?.run {
                                     forEach {
-                                        it.configOkHttp(instance<Application>(),this@apply)
+                                        it.configOkHttp(instance<Context>(tag = "applicationContext"),this@apply)
                                     }
                                 }
                             }
@@ -114,12 +114,12 @@ class ClientModule {
                         .apply {
                             instance<GlobalConfigModule>().provideLocalRetrofitConfigurations()?.run {
                                 forEach {
-                                    it.configLocalRetrofitRetrofit(instance<Application>(),this@apply)
+                                    it.configLocalRetrofitRetrofit(instance<Context>(tag = "applicationContext"),this@apply)
                                 }
                             }
                         }
                         .addCallAdapterFactory(com.laotang.quickdev.localretrofit.calladapter.RxJava2CallAdapterFactory.create())
-                        .addConverterFactory(JsonConverterFactory.create(instance()))
+                        .addConverterFactory(JsonConverterFactory.create(instance<Gson>()))
                         .build()
                 }
             }

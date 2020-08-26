@@ -1,6 +1,5 @@
 package com.laotang.quickdevcore.di.module
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.f2prateek.rx.preferences2.RxSharedPreferences
@@ -31,7 +30,7 @@ class AppModule {
                 bind<GsonBuilder>() with provider { GsonBuilder() }
 
                 bind<IRepositoryManager>() with singleton {
-                    RepositoryManager(instance(),instance())
+                    RepositoryManager(instance<Context>(tag = "applicationContext"),instance())
                 }
 
                 bind<Gson>() with singleton {
@@ -39,7 +38,7 @@ class AppModule {
                             .apply {
                                 instance<GlobalConfigModule>().provideGsonConfigurations()?.run {
                                     forEach {
-                                        it.configGson(instance<Application>(),this@apply)
+                                        it.configGson(instance<Context>(tag = "applicationContext"),this@apply)
                                     }
                                 }
                             }.create()
@@ -57,11 +56,11 @@ class AppModule {
                 }
 
                 bind<File>(tag = "cacheFile") with singleton {
-                    instance<GlobalConfigModule>().provideCacheFile(instance())
+                    instance<GlobalConfigModule>().provideCacheFile(instance<Context>(tag = "applicationContext"))
                 }
 
                 bind<Cache.Factory>() with singleton {
-                    instance<GlobalConfigModule>().provideCacheFactory(instance())
+                    instance<GlobalConfigModule>().provideCacheFactory(instance<Context>(tag = "applicationContext"))
                 }
 
                 bind<Cache<String, Any>>() with singleton {
@@ -73,7 +72,7 @@ class AppModule {
                 }
 
                 bind<SharedPreferences>(tag = "quickDev defaultSharedPreferences") with singleton {
-                    instance<Application>().getSharedPreferences(instance<Application>().packageName + "_core_preferences",Context.MODE_PRIVATE)
+                    instance<Context>(tag = "applicationContext").getSharedPreferences(instance<Context>(tag = "applicationContext").packageName + "_core_preferences",Context.MODE_PRIVATE)
                 }
 
                 bind<RxSharedPreferences>() with singleton {

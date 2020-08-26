@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.alibaba.arouter'
+
 android {
     compileSdkVersion build_version.compileSdkVersion
 
@@ -13,7 +15,8 @@ android {
         targetSdkVersion build_version.targetSdkVersion
         versionCode build_version.versionCode
         versionName build_version.versionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -33,12 +36,37 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation libs.kotlin_stdlib
-    implementation 'androidx.appcompat:appcompat:1.1.0'
 
-    implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation libs.recyclerview
+
+    implementation project(path: ':quickDevCore2')
+    implementation project(path: ':quickDevComponent2')
+
+    implementation project(path: ':quickDevMVVM2')
+
+    implementation project(path: ':quickDevARetrofit')
+    implementation project(path: ':quickDevARouterCallAdapter')
+    
+    implementation project(path: ':quickExtKt2')
+
+    implementation project(path: ':quickDevLiveDataEventBus')
+    implementation 'org.greenrobot:eventbus:3.2.0'
+
+    kapt libs.jetpack_lifecycle_compiler
+    kapt libs.arouter_compiler
+
+    debugImplementation libs.leak_canary_debug
+    releaseImplementation libs.leak_canary_release
+    debugImplementation 'com.didichuxing.doraemonkit:doraemonkit:1.1.5'
+    releaseImplementation 'com.didichuxing.doraemonkit:doraemonkit-no-op:1.1.5'
 }
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+        arg("AROUTER_GENERATE_DOC", "enable")
+    }
+}
+
+apply plugin: 'quick-auto-register'

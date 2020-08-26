@@ -36,16 +36,19 @@ public class RxARouterCallAdapterFactory extends CallAdapter.Factory {
         Class<?> rawType = getRawType(returnType);
         if (rawType == Postcard.class) {
             return new RxARouterCallAdapter(Void.class, false, false, false, false,
-                    true, false,false,false, false);
+                    true, false,false,false, false,false);
         } else if (rawType == Completable.class) {
             return new RxARouterCallAdapter(Void.class, false, false, false, true,
-                    false, false,false,false, false);
+                    false, false,false,false, false,false);
         } else if (rawType == Fragment.class){
             return new RxARouterCallAdapter(Void.class, false, false, false, false,
-                    false, true,false,false, false);
-        }else if (IProvider.class.isAssignableFrom(rawType)){
+                    false, true,false,false, false,false);
+        } else if (IProvider.class.isAssignableFrom(rawType)) {
             return new RxARouterCallAdapter(Void.class, false, false, false, false,
-                    false, false,true,false, false);
+                    false, false, true, false, false,false);
+        } else if (rawType == void.class || rawType == Void.class) {
+            return new RxARouterCallAdapter(Void.class, false, false, false, false,
+                    false, false, false, false, false,true);
         }
         boolean isFlowable = rawType == Flowable.class;
         boolean isSingle = rawType == Single.class;
@@ -81,6 +84,6 @@ public class RxARouterCallAdapterFactory extends CallAdapter.Factory {
             return null;
         }
         return new RxARouterCallAdapter(responseType, isFlowable, isSingle, isMaybe, false, false,
-                false,false,isNavigation, isNavigationForResult);
+                false,false,isNavigation, isNavigationForResult,false);
     }
 }

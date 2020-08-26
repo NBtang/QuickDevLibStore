@@ -1,6 +1,6 @@
 package com.laotang.quickdevcore.integration.http.utl
 
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
 import me.jessyan.retrofiturlmanager.parser.DomainUrlParser
@@ -13,27 +13,51 @@ import org.kodein.di.generic.instance
 
 class DefaultUrlParserEx : UrlParser {
     private lateinit var mDomainUrlParser: UrlParser
+
     @Volatile
     private var mAdvancedUrlParser: UrlParser? = null
+
     @Volatile
     private var mSuperUrlParser: UrlParser? = null
     private lateinit var mRetrofitUrlManager: RetrofitUrlManager
     private lateinit var urlManagerService: RetrofitUrlManagerServiceImpl
 
+    private var urlParseMap: HashMap<String, OnUrlParserListener>? = null
+
     override fun init(retrofitUrlManager: RetrofitUrlManager) {
         this.mRetrofitUrlManager = retrofitUrlManager
         this.mDomainUrlParser = DomainUrlParser().apply { init(retrofitUrlManager) }
-        val urlManagerService by obtainAppKodeinAware().instance<IRetrofitUrlManagerService>()
+        val urlManagerService by rootKodein().instance<IRetrofitUrlManagerService>()
         this.urlManagerService = urlManagerService as RetrofitUrlManagerServiceImpl
     }
 
     override fun parseUrl(domainUrl: HttpUrl?, url: HttpUrl): HttpUrl {
         if (null == domainUrl) return url
 
-        if(urlManagerService.urlParseMap.containsKey(domainUrl.toString())){
-            val newUrl =  urlManagerService.urlParseMap[domainUrl.toString()]!!.parseUrl(domainUrl,url)
-            if(newUrl != null){
+        if (urlParseMap == null) {
+            urlParseMap = HashMap()
+        }
+        var onUrlParserListener = urlParseMap!![domainUrl.toString()]
+        if (onUrlParserListener != null) {
+            val newUrl = onUrlParserListener.parseUrl(domainUrl, url)
+            if (newUrl != null) {
                 return newUrl
+            }
+        } else {
+            val onUrlParserListeners = urlManagerService.getUrlParserListeners()
+            if (onUrlParserListeners.isNotEmpty()) {
+                onUrlParserListeners.forEach {
+                    if (it.getDomainUrl() != null && domainUrl.toString() == it.getDomainUrl().toString()) {
+                        onUrlParserListener = it
+                    }
+                }
+                if (onUrlParserListener != null) {
+                    urlParseMap!![domainUrl.toString()] = onUrlParserListener!!
+                }
+                val newUrl = onUrlParserListener?.parseUrl(domainUrl, url)
+                if (newUrl != null) {
+                    return newUrl
+                }
             }
         }
 

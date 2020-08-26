@@ -13,16 +13,20 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.kcontext
 import org.kodein.di.generic.singleton
 
-class AppController(application: Application, globalConfigModule: GlobalConfigModule, kodeinModules: ArrayList<Kodein.Module>) : KodeinAware {
-    override val kodein: Kodein = Kodein.lazy {
-        bind<Context>() with singleton { application}
+class AppController(
+    application: Application,
+    globalConfigModule: GlobalConfigModule,
+    kodeinModules: ArrayList<Kodein.Module>
+) : KodeinAware {
+    override val kodein: Kodein = Kodein.lazy(allowSilentOverride = true) {
         bind<GlobalConfigModule>() with singleton { globalConfigModule }
+        bind<Context>(tag = "applicationContext") with singleton { application.applicationContext }
         import(androidModule(application))
         import(androidXModule(application))
         import(AppModule.appModule)
         import(ClientModule.clientModule)
         kodeinModules.forEach {
-            import(it)
+            import(it,allowOverride = true)
         }
     }
     override val kodeinContext = kcontext(application)

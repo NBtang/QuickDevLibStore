@@ -3,16 +3,9 @@
     <application>
         <provider
             android:authorities="${applicationId}.quick-core-last-provider"
-            android:name="com.laotang.quickdevcore.base.QuickCoreInitLastProvider"
+            android:name="com.laotang.quickdevcore.base.QuickCoreInitProvider"
             android:multiprocess="true"
             android:initOrder="-2147483648"
-            android:exported="false"/>
-
-        <provider
-            android:authorities="${applicationId}.quick-core-first-provider"
-            android:name="com.laotang.quickdevcore.base.QuickCoreInitFirstProvider"
-            android:multiprocess="true"
-            android:initOrder="2147483647"
             android:exported="false"/>
     </application>
 </manifest>

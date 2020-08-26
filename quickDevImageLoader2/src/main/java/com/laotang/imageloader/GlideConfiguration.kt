@@ -15,7 +15,7 @@ import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.target.SimpleTarget
 import com.laotang.quickdevcore.integration.imageloader.ImageLoader
 import com.laotang.quickdevcore.utils.makeDirs
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import okhttp3.OkHttpClient
 import org.kodein.di.generic.instance
 import java.io.File
@@ -26,7 +26,7 @@ class GlideConfiguration: AppGlideModule() {
     private var IMAGE_DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024//图片缓存文件最大值为100Mb
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {
-        val cacheFile:File by obtainAppKodeinAware().instance(tag = "cacheFile")
+        val cacheFile:File by rootKodein().instance(tag = "cacheFile")
         builder.setDiskCache { DiskLruCacheWrapper.create(makeDirs(File(cacheFile, "Glide")), IMAGE_DISK_CACHE_MAX_SIZE.toLong()) }
 
         val calculator = MemorySizeCalculator.Builder(context).build()
@@ -39,7 +39,7 @@ class GlideConfiguration: AppGlideModule() {
         builder.setMemoryCache(LruResourceCache(customMemoryCacheSize.toLong()))
         builder.setBitmapPool(LruBitmapPool(customBitmapPoolSize.toLong()))
 
-        val imageLoader: ImageLoader by obtainAppKodeinAware().instance()
+        val imageLoader: ImageLoader by rootKodein().instance()
         val imageLoaderStrategy = imageLoader.mStrategy
         if(imageLoaderStrategy is GlideAppliesOptions){
             (imageLoaderStrategy as GlideAppliesOptions).applyGlideOptions(context,builder)
@@ -47,7 +47,7 @@ class GlideConfiguration: AppGlideModule() {
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        val okHttpClient :OkHttpClient by obtainAppKodeinAware().instance()
+        val okHttpClient :OkHttpClient by rootKodein().instance()
         registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(okHttpClient))
     }
 

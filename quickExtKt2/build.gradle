@@ -41,6 +41,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     compileOnly project(path: ':quickDevCore2')
+    compileOnly libs.recyclerview
 }
 
 ext {
@@ -51,7 +52,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'exKoi2'
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.5'
 
     libraryName = 'exKoi'
     libraryDescription = ''

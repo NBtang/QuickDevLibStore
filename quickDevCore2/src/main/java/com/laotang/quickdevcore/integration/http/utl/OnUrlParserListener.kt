@@ -4,4 +4,5 @@ import okhttp3.HttpUrl
 
 interface OnUrlParserListener {
     fun parseUrl(domainUrl: HttpUrl?, url: HttpUrl): HttpUrl?
+    fun getDomainUrl(): HttpUrl?
 }

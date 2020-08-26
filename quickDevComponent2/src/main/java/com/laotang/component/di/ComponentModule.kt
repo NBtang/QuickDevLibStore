@@ -1,6 +1,6 @@
 package com.laotang.component.di
 
-import android.app.Application
+import android.content.Context
 import com.laotang.component.core.ComponentConfig
 import com.laotang.quickdev.aretrofit.ARetrofit
 import com.laotang.quickdev.aroutercalladapter.RxARouterCallAdapterFactory
@@ -20,7 +20,7 @@ val componentModule = Kodein.Module(MODEL_MODULE_TAG) {
             .apply {
                 val componentConfig = instance<ComponentConfig>()
                 componentConfig.provideARetrofitConfiguration()
-                    ?.configARetrofit(instance<Application>(), this)
+                    ?.configARetrofit(instance<Context>(tag = "applicationContext"), this)
                 addCallAdapterFactory(RxARouterCallAdapterFactory.create())
             }
             .build()

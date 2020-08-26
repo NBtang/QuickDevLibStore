@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.laotang.quickdevcore.integration.cache.Cache
 import com.laotang.quickdevcore.integration.cache.IntelligentCache
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import com.squareup.leakcanary.RefWatcher
 import org.kodein.di.generic.instance
 
@@ -55,7 +55,7 @@ class FragmentLifecycleCallbacksImpl: FragmentManager.FragmentLifecycleCallbacks
 
     override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
         super.onFragmentDestroyed(fm, f)
-        val cache: Cache<String, Any> by obtainAppKodeinAware().instance()
+        val cache: Cache<String, Any> by rootKodein().instance()
         cache[IntelligentCache.getKeyOfKeep(RefWatcher::class.java.name)]?.apply {
             (this as RefWatcher).watch(f)
         }

@@ -3,27 +3,25 @@ package com.laotang.quickdev.mvvm
 import android.app.Application
 import android.content.Intent
 import android.content.res.Resources
-import android.os.Bundle
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdev.mvvm.channel.MethodChannel
+import com.laotang.quickdevcore.utils.rootKodein
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.android.lifecycle.scope
 import org.kodein.di.Kodein
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application), IBaseViewModel {
 
-    private lateinit var hostKodein: Kodein
-    override val kodein: Kodein by lazy {
-        hostKodein
-    }
+    override val kodein: Kodein = rootKodein()
 
     private val cacheDataMap = HashMap<String, Any>()
     internal val finishActivityLiveData: MutableLiveData<Unit> = MutableLiveData()
     private lateinit var mLifecycleRegistry: LifecycleRegistry
     private lateinit var lifecycleOwner: LifecycleOwner
-    private var extras: Bundle? = null
+    var mIntent: Intent? = null
+    private var existedViewModelBind: IBaseViewModel.OnExistedViewModelBind? = null
 
     init {
         init()
@@ -37,17 +35,13 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         lifecycleOwner.scope(Lifecycle.Event.ON_DESTROY)
     }
 
-    internal fun bindLifecycle(lifecycleOwner: LifecycleOwner) {
+    fun bindLifecycle(lifecycleOwner: LifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    internal fun bindHostKodein(hostKodein: Kodein) {
-        this.hostKodein = hostKodein
-    }
-
-    internal fun setExtraDatas(extras: Bundle?){
-        this.extras = extras
+    fun setIntent(intent: Intent?) {
+        this.mIntent = intent
     }
 
     protected fun finishActivity() {
@@ -81,6 +75,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
 
     override fun onCreate(owner: LifecycleOwner) {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        existedViewModelBind?.bind()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
@@ -102,6 +97,10 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
 
     override fun onPause(owner: LifecycleOwner) {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    }
+
+    override fun setExistedViewModelBinder(bind: IBaseViewModel.OnExistedViewModelBind) {
+        this.existedViewModelBind = bind
     }
 
     override fun getLifecycle(): Lifecycle {

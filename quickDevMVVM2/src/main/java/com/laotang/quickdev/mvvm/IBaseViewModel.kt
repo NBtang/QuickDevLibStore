@@ -24,4 +24,10 @@ interface IBaseViewModel : LifecycleObserver, LifecycleOwner, KodeinAware {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause(owner: LifecycleOwner)
+
+    fun setExistedViewModelBinder(bind: OnExistedViewModelBind)
+
+    interface OnExistedViewModelBind {
+        fun bind()
+    }
 }

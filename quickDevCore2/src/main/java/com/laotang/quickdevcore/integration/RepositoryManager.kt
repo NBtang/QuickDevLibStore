@@ -1,11 +1,11 @@
 package com.laotang.quickdevcore.integration
 
-import android.app.Application
+import android.content.Context
 import com.laotang.quickdev.localretrofit.LocalRetrofit
 import com.laotang.quickdevcore.di.module.GlobalConfigModule
 import com.laotang.quickdevcore.integration.cache.Cache
 import com.laotang.quickdevcore.integration.cache.CacheType
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import com.mcxiaoke.koi.ext.isConnected
 import io.rx_cache2.EvictDynamicKey
 import io.rx_cache2.EvictDynamicKeyGroup
@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
-class RepositoryManager(val context: Application, cacheFactory: Cache.Factory):IRepositoryManager {
+class RepositoryManager(val context: Context, cacheFactory: Cache.Factory):IRepositoryManager {
 
     private val mRetrofitServiceCache: Cache<String, Any> = cacheFactory.build(CacheType.RETROFIT_SERVICE_CACHE)
     private val mLocalRetrofitServiceCache: Cache<String, Any> = cacheFactory.build(CacheType.RETROFIT_SERVICE_CACHE)
@@ -35,7 +35,7 @@ class RepositoryManager(val context: Application, cacheFactory: Cache.Factory):I
             override fun invoke(proxy: Any?, method: Method, args: Array<Any>): Any? {
                 var cacheService: T? = mCacheServiceCache[cache.name] as T
                 if (cacheService == null) {
-                    val rxCache by obtainAppKodeinAware().instance<RxCache>()
+                    val rxCache by rootKodein().instance<RxCache>()
                     cacheService = rxCache.using(cache)
                     mCacheServiceCache.put(cache.name, cacheService!!)
                 }
@@ -48,7 +48,7 @@ class RepositoryManager(val context: Application, cacheFactory: Cache.Factory):I
                             else -> false
                         }
                     }
-                    val globalConfigModule by obtainAppKodeinAware().instance<GlobalConfigModule>()
+                    val globalConfigModule by rootKodein().instance<GlobalConfigModule>()
                     val offlineModel = globalConfigModule.provideRxCacheConfiguration()?.offlineModel()?:false
                     if(evictArgs != null && offlineModel && !context.isConnected()){
                         args.forEachIndexed {
@@ -82,7 +82,7 @@ class RepositoryManager(val context: Application, cacheFactory: Cache.Factory):I
     private fun <T> getRetrofitService(serviceClass: Class<T>): T {
         var retrofitService: T? = mRetrofitServiceCache[serviceClass.name] as T
         if (retrofitService == null) {
-            val retrofit by obtainAppKodeinAware().instance<Retrofit>()
+            val retrofit by rootKodein().instance<Retrofit>()
             retrofitService = retrofit.create(serviceClass)
             val proxy :T? = mRetrofitServiceProxyCache[serviceClass.name] as T
             if(proxy != null){
@@ -96,7 +96,7 @@ class RepositoryManager(val context: Application, cacheFactory: Cache.Factory):I
     }
 
     override fun clearAllCache() {
-        val rxCache by obtainAppKodeinAware().instance<RxCache>()
+        val rxCache by rootKodein().instance<RxCache>()
         rxCache.evictAll().subscribe()
     }
 
@@ -108,7 +108,7 @@ class RepositoryManager(val context: Application, cacheFactory: Cache.Factory):I
     override fun <T> obtainLocalRetrofitService(service: Class<T>): T {
         var localRetrofitService: T? = mLocalRetrofitServiceCache[service.name] as T
         if (localRetrofitService == null) {
-            val localRetrofit by obtainAppKodeinAware().instance<LocalRetrofit>()
+            val localRetrofit by rootKodein().instance<LocalRetrofit>()
             localRetrofitService = localRetrofit.create(service)
             mRetrofitServiceCache.put(service.name, localRetrofitService!!)
         }

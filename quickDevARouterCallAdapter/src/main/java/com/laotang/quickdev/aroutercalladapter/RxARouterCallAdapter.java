@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -17,7 +18,6 @@ import com.laotang.quickdev.aretrofit.Response;
 import com.laotang.quickdev.aretrofit.RouterInfo;
 import com.laotang.quickdev.rxactivity.ActivityResultEntity;
 import com.laotang.quickdev.rxactivity.RxActivityResult;
-import com.laotang.quickdev.rxactivity.RxReportFragment;
 
 import java.lang.reflect.Type;
 
@@ -37,9 +37,11 @@ final class RxARouterCallAdapter<R> implements CallAdapter<R, Object> {
     private final boolean isProvider;
     private final boolean isNavigation;
     private final boolean isNavigationForResult;
+    private final boolean isNavigationExecute;
 
     RxARouterCallAdapter(Type responseType, boolean isFlowable, boolean isSingle, boolean isMaybe, boolean isCompletable,
-                         boolean isPostcard, boolean isFragment, boolean isProvider, boolean isNavigation, boolean isNavigationForResult) {
+                         boolean isPostcard, boolean isFragment, boolean isProvider, boolean isNavigation, boolean isNavigationForResult,
+                         boolean isNavigationExecute) {
         this.responseType = responseType;
         this.isFlowable = isFlowable;
         this.isSingle = isSingle;
@@ -50,6 +52,7 @@ final class RxARouterCallAdapter<R> implements CallAdapter<R, Object> {
         this.isProvider = isProvider;
         this.isNavigation = isNavigation;
         this.isNavigationForResult = isNavigationForResult;
+        this.isNavigationExecute = isNavigationExecute;
     }
 
     @Override
@@ -126,8 +129,14 @@ final class RxARouterCallAdapter<R> implements CallAdapter<R, Object> {
                 if(!(context instanceof FragmentActivity)){
                     throw new RuntimeException("context is not instanceof FragmentActivity");
                 }
+                Class<?> clazz;
+                if (((FragmentActivity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    clazz = RxARouterLandscapeActivity.class;
+                } else {
+                    clazz = RxARouterPortraitActivity.class;
+                }
                 RxActivityResult rxActivityResult = new RxActivityResult((FragmentActivity)context);
-                Intent intent = new Intent(context,RxARouterActivity.class);
+                Intent intent = new Intent(context, clazz);
                 intent.putExtra("relativeUrl",routerInfo.getRelativeUrl());
                 intent.putExtra("bundle",routerInfo.getBundle());
                 intent.putExtra("flags",routerInfo.getFlags());
@@ -139,6 +148,15 @@ final class RxARouterCallAdapter<R> implements CallAdapter<R, Object> {
                     }
                 });
             });
+        }
+        if (isNavigationExecute) {
+            RouterInfo routerInfo = (RouterInfo) responseObservable.blockingFirst().body();
+            Postcard postcard = buildPostCard(routerInfo);
+            Context context = null;
+            if (routerInfo.getContextWeakReference() != null) {
+                context = routerInfo.getContextWeakReference().get();
+            }
+            return postcard.navigation(context);
         }
         if (isFlowable) {
             return observable.toFlowable(BackpressureStrategy.LATEST);

@@ -51,7 +51,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'mvvm2'
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4'
 
     libraryName = 'quickmvvm'
     libraryDescription = ''

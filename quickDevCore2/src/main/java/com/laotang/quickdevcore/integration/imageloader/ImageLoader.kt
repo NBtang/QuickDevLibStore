@@ -4,14 +4,17 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 
-class ImageLoader(var mStrategy: ImageLoaderStrategy<ImageConfig>?, private val imageLoaderInterceptors:List<ImageLoaderInterceptor<ImageConfig>>) {
+class ImageLoader(
+    var mStrategy: ImageLoaderStrategy<ImageConfig>?,
+    private val imageLoaderInterceptors: List<ImageLoaderInterceptor<ImageConfig>>
+) {
     fun <T : ImageConfig> loadImage(view: View, config: T) {
         val interceptors = ArrayList<ImageLoaderInterceptor<ImageConfig>>()
         interceptors.addAll(imageLoaderInterceptors)
         interceptors.add(ImageLoaderReallyInterceptor<T>() as ImageLoaderInterceptor<ImageConfig>)
         this.mStrategy?.let {
-            val reallyInterceptorChain = ImageLoaderReallyInterceptorChain<T>(it,interceptors)
-            reallyInterceptorChain.proceed(view,config)
+            val reallyInterceptorChain = ImageLoaderReallyInterceptorChain<T>(it, interceptors)
+            reallyInterceptorChain.proceed(view, config)
         }
     }
 
@@ -20,8 +23,8 @@ class ImageLoader(var mStrategy: ImageLoaderStrategy<ImageConfig>?, private val 
         interceptors.addAll(imageLoaderInterceptors)
         interceptors.add(ImageLoaderReallyInterceptor<T>() as ImageLoaderInterceptor<ImageConfig>)
         this.mStrategy?.let {
-            val reallyInterceptorChain = ImageLoaderReallyInterceptorChain<T>(it,interceptors)
-            reallyInterceptorChain.proceed(context,config)
+            val reallyInterceptorChain = ImageLoaderReallyInterceptorChain<T>(it, interceptors)
+            reallyInterceptorChain.proceed(context, config)
         }
     }
 

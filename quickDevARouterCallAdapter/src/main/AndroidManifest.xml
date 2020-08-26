@@ -1,8 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.laotang.quickdev.aroutercalladapter" >
+    package="com.laotang.quickdev.aroutercalladapter">
+
     <application>
-        <activity android:name=".RxARouterActivity"
+        <activity
+            android:name=".RxARouterPortraitActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name=".RxARouterLandscapeActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 </manifest>

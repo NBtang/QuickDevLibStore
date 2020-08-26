@@ -4,21 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import androidx.lifecycle.ViewModelStoreOwner
+import com.laotang.quickdevcore.utils.rootKodein
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.android.lifecycle.scope
 import org.kodein.di.Kodein
-import org.kodein.di.android.retainedKodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 
 abstract class BaseActivity : AppCompatActivity(), IActivity {
 
-    private val parentKodein: Kodein = obtainAppKodeinAware().kodein
-
-    override val kodein: Kodein by retainedKodein {
+    override val kodein: Kodein = Kodein.lazy {
+        val parentKodein: Kodein = rootKodein()
         extend(parentKodein)
         /* activity specific bindings */
         if (this@BaseActivity.javaClass.isAnnotationPresent(Module::class.java)) {
@@ -68,10 +66,11 @@ abstract class BaseActivity : AppCompatActivity(), IActivity {
         return null
     }
 
-    open fun <P : BasePresenter<*>> providePresenter(
+    open fun <P : IPresenter<*>> providePresenter(
         clazz: Class<P>,
-        activity: FragmentActivity? = null
+        viewModelStoreOwner: ViewModelStoreOwner? = null,
+        factory: PresenterProviders.Factory? = null
     ): P {
-        return PresenterProviders.of(activity ?: this).get(clazz)
+        return PresenterProviders.of(viewModelStoreOwner ?: this, factory).get(clazz)
     }
 }

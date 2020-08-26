@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.laotang.quickdev.hermes.eventbus">
+
+    <application>
+        <service android:name="com.laotang.quickdev.hermes.eventbus.HermesEventBus$Service" />
+    </application>
+
+</manifest>

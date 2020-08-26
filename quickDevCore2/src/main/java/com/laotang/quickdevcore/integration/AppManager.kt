@@ -3,8 +3,9 @@ package com.laotang.quickdevcore.integration
 import android.app.Activity
 import android.app.Application
 import java.util.*
+import kotlin.system.exitProcess
 
-class AppManager private constructor(){
+class AppManager private constructor() {
     private lateinit var mApplication: Application
     private var mActivityList: LinkedList<Activity> = LinkedList()
     private var mCurrentActivity: Activity? = null
@@ -22,13 +23,13 @@ class AppManager private constructor(){
         return mCurrentActivity
     }
 
-    fun getApplication():Application{
+    fun getApplication(): Application {
         return this.mApplication
     }
 
     fun getTopActivity(): Activity? {
         getActivityList().apply {
-            return if(size>0) get(size - 1) else null
+            return if (size > 0) get(size - 1) else null
         }
     }
 
@@ -58,7 +59,7 @@ class AppManager private constructor(){
     fun removeActivity(location: Int): Activity? {
         getActivityList().apply {
             synchronized(AppManager::class.java) {
-                if (location in 1..(size - 1)) {
+                if (location in 1 until size) {
                     return removeAt(location)
                 }
             }
@@ -120,7 +121,7 @@ class AppManager private constructor(){
     }
 
     fun killAll(vararg excludeActivityClasses: Class<*>) {
-        val excludeList = Arrays.asList(*excludeActivityClasses)
+        val excludeList = mutableListOf(*excludeActivityClasses)
         synchronized(AppManager::class.java) {
             val iterator = getActivityList().iterator()
             while (iterator.hasNext()) {
@@ -136,7 +137,7 @@ class AppManager private constructor(){
     }
 
     fun killAll(vararg excludeActivityName: String) {
-        val excludeList = Arrays.asList(*excludeActivityName)
+        val excludeList = mutableListOf(*excludeActivityName)
         synchronized(AppManager::class.java) {
             val iterator = getActivityList().iterator()
             while (iterator.hasNext()) {
@@ -155,7 +156,7 @@ class AppManager private constructor(){
         try {
             killAll()
             android.os.Process.killProcess(android.os.Process.myPid())
-            System.exit(0)
+            exitProcess(0)
         } catch (e: Exception) {
             e.printStackTrace()
         }

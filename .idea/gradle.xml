@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="false" />
+        <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -10,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/autoregister" />
+            <option value="$PROJECT_DIR$/quickDevAAC" />
             <option value="$PROJECT_DIR$/quickDevARetrofit" />
             <option value="$PROJECT_DIR$/quickDevARouterCallAdapter" />
             <option value="$PROJECT_DIR$/quickDevARouterReflect" />
@@ -17,19 +21,23 @@
             <option value="$PROJECT_DIR$/quickDevComponent2" />
             <option value="$PROJECT_DIR$/quickDevCore2" />
             <option value="$PROJECT_DIR$/quickDevDiskLoggerHelp" />
+            <option value="$PROJECT_DIR$/quickDevHermesEventBusHelp" />
+            <option value="$PROJECT_DIR$/quickDevHermesLiveData" />
             <option value="$PROJECT_DIR$/quickDevImageLoader2" />
+            <option value="$PROJECT_DIR$/quickDevLiveDataEventBus" />
             <option value="$PROJECT_DIR$/quickDevLocalRetrofit" />
             <option value="$PROJECT_DIR$/quickDevLogEvent" />
             <option value="$PROJECT_DIR$/quickDevMVVM2" />
             <option value="$PROJECT_DIR$/quickDevMvp2" />
             <option value="$PROJECT_DIR$/quickDevOkhttpSafety" />
             <option value="$PROJECT_DIR$/quickDevRxActivity" />
+            <option value="$PROJECT_DIR$/quickDevRxTray" />
+            <option value="$PROJECT_DIR$/quickDevShadowHelper" />
             <option value="$PROJECT_DIR$/quickDevShapeWidget" />
             <option value="$PROJECT_DIR$/quickExtKt2" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
-        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>

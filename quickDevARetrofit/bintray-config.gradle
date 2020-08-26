@@ -6,7 +6,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'aretrofit'
-    libraryVersion = '1.0.6'
+    libraryVersion = '1.0.7'
 
     libraryName = 'aretrofit'
     libraryDescription = ''

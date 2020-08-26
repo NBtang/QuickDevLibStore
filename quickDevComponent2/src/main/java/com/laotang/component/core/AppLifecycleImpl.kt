@@ -9,14 +9,12 @@ import com.laotang.component.utils.isApkInDebug
 import com.laotang.quickdevcore.base.delegate.AppLifecycle
 import com.laotang.quickdevcore.integration.cache.Cache
 import com.laotang.quickdevcore.integration.cache.IntelligentCache
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import org.kodein.di.generic.instance
 
 class AppLifecycleImpl : AppLifecycle {
-    override fun attachBaseContext(base: Context) {
-    }
 
     override fun onCreate(application: Application) {
         if (LeakCanary.isInAnalyzerProcess(application)) {
@@ -30,14 +28,13 @@ class AppLifecycleImpl : AppLifecycle {
             ARouter.openDebug()  // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
         }
         ARouter.init(application) // 尽可能早，推荐在Application中初始化
-
-        val componentConfig by obtainAppKodeinAware().instance<ComponentConfig>()
+        val componentConfig by rootKodein().instance<ComponentConfig>()
         val enableLeakCanary = componentConfig.enableLeakCanary()
         val enableDoraemonKit = componentConfig.enableDoraemonKit()
 
         val mRefWatcher =
             if (enableLeakCanary) LeakCanary.install(application) else RefWatcher.DISABLED
-        val cache: Cache<String, Any> by obtainAppKodeinAware().instance()
+        val cache: Cache<String, Any> by rootKodein().instance()
         cache.put(IntelligentCache.getKeyOfKeep(RefWatcher::class.java.name), mRefWatcher as Any)
 
         if (enableDoraemonKit)

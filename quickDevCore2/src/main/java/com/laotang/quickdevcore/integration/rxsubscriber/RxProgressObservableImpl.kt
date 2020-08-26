@@ -3,7 +3,8 @@ package com.laotang.quickdevcore.integration.rxsubscriber
 import android.content.Context
 import android.content.DialogInterface
 
-class RxProgressObservableImpl(msg: String, cancelable: Boolean = true) : RxProgressObservable(msg, cancelable) {
+class RxProgressObservableImpl(msg: String, cancelable: Boolean = true) :
+    RxProgressObservable(msg, cancelable) {
 
     override fun show(context: Context, msg: String) {
         if (cancelable) {

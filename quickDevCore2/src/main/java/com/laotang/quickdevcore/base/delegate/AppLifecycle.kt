@@ -2,7 +2,6 @@ package com.laotang.quickdevcore.base.delegate
 
 import android.app.Application
 import android.content.ComponentCallbacks2
-import android.content.Context
 
 /**
  * ================================================
@@ -10,6 +9,5 @@ import android.content.Context
  * ================================================
  */
 interface AppLifecycle : ComponentCallbacks2 {
-    fun attachBaseContext(base: Context)
     fun onCreate(application: Application)
 }

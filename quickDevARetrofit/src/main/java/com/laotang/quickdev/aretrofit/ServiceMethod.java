@@ -244,9 +244,9 @@ final class ServiceMethod<R, T> {
                 throw methodError(
                         "Method return type must not include a type variable or wildcard: %s", returnType);
             }
-            if (returnType == void.class) {
-                throw methodError("Service methods cannot return void.");
-            }
+//            if (returnType == void.class) {
+//                throw methodError("Service methods cannot return void.");
+//            }
             Annotation[] annotations = method.getAnnotations();
             try {
                 //noinspection unchecked

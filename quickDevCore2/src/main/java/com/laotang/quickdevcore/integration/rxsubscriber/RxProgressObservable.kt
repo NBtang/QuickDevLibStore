@@ -7,7 +7,7 @@ import io.reactivex.subjects.PublishSubject
 abstract class RxProgressObservable(val msg:String,val cancelable:Boolean){
     protected val cancelObservable = PublishSubject.create<Boolean>()
 
-    internal fun getCancelObservable():Observable<Boolean>{
+    private fun getCancelObservable():Observable<Boolean>{
         return cancelObservable
     }
 

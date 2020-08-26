@@ -5,18 +5,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.android.lifecycle.scope
 import org.kodein.di.Kodein
 import org.kodein.di.generic.instance
 
-open class BasePresenter<V:IView>: IPresenter<V>,LifecycleObserver {
+open class BasePresenter<V : IView> : IPresenter<V>, LifecycleObserver {
 
-    private val mApplication:Application by instance()
-    protected var mView:V? = null
+    private val mApplication: Application by instance()
+    private var mView: V? = null
 
-    override val kodein: Kodein = obtainAppKodeinAware().kodein
+    override val kodein: Kodein = rootKodein()
     protected lateinit var owner: LifecycleOwner
 
     protected val scopeProvider: ScopeProvider by lazy {
@@ -27,7 +27,7 @@ open class BasePresenter<V:IView>: IPresenter<V>,LifecycleObserver {
         return mApplication
     }
 
-    internal fun bindLifecycle(owner: LifecycleOwner){
+    override fun bindLifecycle(owner: LifecycleOwner) {
         this.owner = owner
         this.owner.lifecycle.addObserver(this)
     }
@@ -40,33 +40,37 @@ open class BasePresenter<V:IView>: IPresenter<V>,LifecycleObserver {
         mView = view
     }
 
+    override fun getView(): V? {
+        return mView
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    open fun onCreate(){
+    open fun onCreate() {
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    open fun onStart(){
+    open fun onStart() {
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    open fun onResume(){
+    open fun onResume() {
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    open fun onPause(){
+    open fun onPause() {
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    open fun onStop(){
+    open fun onStop() {
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    open fun onDestroy(){
+    open fun onDestroy() {
         detach()
         owner.lifecycle.removeObserver(this)
     }

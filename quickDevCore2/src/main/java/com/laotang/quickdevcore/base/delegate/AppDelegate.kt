@@ -52,12 +52,6 @@ class AppDelegate : App,AppLifecycle, KodeinAware {
         return instance
     }
 
-    override fun attachBaseContext(base: Context) {
-        for (lifecycle in mAppLifecycleList) {
-            lifecycle.attachBaseContext(base)
-        }
-    }
-
     private fun loadAutoRegister(){
 
     }

@@ -2,7 +2,7 @@ package com.laotang.quickdev.mvp.base
 
 import androidx.lifecycle.MutableLiveData
 
-open class BaseViewDelegate:IView {
+open class BaseViewDelegate : IView {
     val finishActivityLiveData by lazy {
         MutableLiveData<Boolean>()
     }
@@ -16,7 +16,7 @@ open class BaseViewDelegate:IView {
     }
 
     override fun onError(code: Int, msg: String) {
-        errorLiveData.value = ErrorReportBean(code,msg)
+        errorLiveData.value = ErrorReportBean(code, msg)
     }
 
 }

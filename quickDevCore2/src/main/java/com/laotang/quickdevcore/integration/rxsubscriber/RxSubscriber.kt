@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.laotang.quickdevcore.di.module.GlobalConfigModule
 import com.laotang.quickdevcore.integration.AppManager
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
+import com.laotang.quickdevcore.utils.rootKodein
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
@@ -18,8 +18,8 @@ abstract class RxSubscriber<T>(
     cancelable: Boolean = true
 ) : DisposableObserver<T>() {
 
-    private val rxErrorHandler by obtainAppKodeinAware().instance<RxErrorHandler>()
-    private val mGlobalConfigModule by obtainAppKodeinAware().instance<GlobalConfigModule>()
+    private val rxErrorHandler by rootKodein().instance<RxErrorHandler>()
+    private val mGlobalConfigModule by rootKodein().instance<GlobalConfigModule>()
     private var progressObservable: RxProgressObservable? = null
     private val mHandlerFactory = rxErrorHandler.handlerFactory
     private var cancelDisposable: Disposable? = null

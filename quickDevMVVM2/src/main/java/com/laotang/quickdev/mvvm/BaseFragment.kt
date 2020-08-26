@@ -1,133 +1,74 @@
 package com.laotang.quickdev.mvvm
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.laotang.quickdevcore.utils.obtainAppKodeinAware
-import com.uber.autodispose.ScopeProvider
-import com.uber.autodispose.android.lifecycle.scope
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
-import java.lang.AssertionError
+import androidx.lifecycle.*
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseFragment<VM : BaseViewModel> : Fragment(), IFragment {
-    protected var mContext: Context? = null
-    private var baseView: View? = null
-    private var firstViewCreated = false
-    protected lateinit var mViewModel: VM
-    private val parentKodein: Kodein = obtainAppKodeinAware().kodein
+abstract class BaseFragment<VM : BaseViewModel> : BaseSimpleFragment() {
 
-    override val kodein: Kodein = Kodein {
-        extend(parentKodein)
-        if (this@BaseFragment.javaClass.isAnnotationPresent(Module::class.java)) {
-            val module = this@BaseFragment.javaClass.getAnnotation(Module::class.java)
-            val clazzArray = module.values
-            clazzArray.iterator().forEach { clazz ->
-                if (KodeinModuleProvider::class.java.isAssignableFrom(clazz.java)) {
-                    val instance = clazz.java.newInstance() as KodeinModuleProvider
-                    import(module = instance.providerModule(), allowOverride = true)
-                }
-            }
+    protected lateinit var mViewModel: VM
+    private var mViewBindHolder: ViewBindHolder? = null
+
+    override fun afterSuperOnActivityCreated(savedInstanceState: Bundle?) {
+        super.afterSuperOnActivityCreated(savedInstanceState)
+        mViewModel = initViewModel()
+        arguments?.apply {
+            val intent = Intent()
+            intent.putExtras(this)
+            mViewModel.setIntent(intent)
         }
-        bind<Fragment>() with instance(this@BaseFragment)
-        bind<FragmentActivity>() with provider {
-            this@BaseFragment.requireActivity()
-        }
+        mViewModel.bindLifecycle(this)
     }
 
-    protected val scopeProvider: ScopeProvider by lazy {
-        this.scope(Lifecycle.Event.ON_DESTROY)
+    override fun layout(): Int {
+        return mViewBindHolder?.layout() ?: 0
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mContext = context
+        mViewBindHolder = getViewBindHolder()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mContext = null
-    }
-
-    override fun onCreateView(
+    override fun contentView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!enableView()) {
-            return super.onCreateView(inflater, container, savedInstanceState)
-        }
-        if (baseView == null) {
-            val contentView = contentView(inflater, container, savedInstanceState)
-            baseView = if (contentView != null) {
-                contentView
-            } else {
-                val layoutId = layout()
-                if (layoutId == 0) {
-                    throw AssertionError("no layout id")
-                }
-                inflater.inflate(layoutId, container, false)
-            }
-            firstViewCreated = true
-        }
-        return baseView
+        return mViewBindHolder?.contentView(inflater, container, savedInstanceState)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        mViewModel = initViewModel()
-        mViewModel.bindHostKodein(kodein)
-        arguments?.apply {
-            mViewModel.setExtraDatas(this)
-        }
-        mViewModel.bindLifecycle(this)
-        if (firstViewCreated) {
-            initParam(savedInstanceState)
-            initView(savedInstanceState)
-            initViewObservable(savedInstanceState)
-            firstViewCreated = false
-        }
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
+        super.initView(savedInstanceState, contentView)
+        mViewBindHolder?.setContentView(contentView)
     }
 
-    override fun initParam(savedInstanceState: Bundle?) {}
+    open fun initViewObservable(savedInstanceState: Bundle?, viewModel: VM) {
+        mViewBindHolder?.setAdapter(getViewBindAdapter(), viewModel, this)
+    }
 
-    override fun initView(savedInstanceState: Bundle?) {}
-
-    open fun initViewObservable(savedInstanceState: Bundle?, viewModel: VM) {}
-
-    override fun initViewObservable(savedInstanceState: Bundle?) {
+    override fun initViewObservable(savedInstanceState: Bundle?, contentView: View?) {
+        super.initViewObservable(savedInstanceState, contentView)
         mViewModel.finishActivityLiveData.observe(this, Observer {
             finishHostActivity()
         })
         initViewObservable(savedInstanceState, mViewModel)
     }
 
-    fun finishHostActivity() {
+    override fun onDestroy() {
+        mViewBindHolder?.setContentView(null)
+        super.onDestroy()
+    }
+
+    private fun finishHostActivity() {
         requireActivity().finish()
     }
 
-    open fun enableView(): Boolean = true
-
-    open fun contentView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return null
-    }
-
-    protected open fun initViewModel(): VM {
+    protected open fun initViewModel(factory: ViewModelProvider.Factory? = null): VM {
         val genericSuperclass = javaClass.genericSuperclass
         return if (genericSuperclass is ParameterizedType) {
             val actualTypeArguments = genericSuperclass.actualTypeArguments
@@ -139,9 +80,14 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(), IFragment {
                     false
                 }
             }
-            ViewModelProviders.of(this).get(genericClass as Class<VM>)
+            ViewModelProviders.of(this, factory).get(genericClass as Class<VM>)
         } else {
-            ViewModelProviders.of(this).get(BaseViewModel::class.java) as VM
+            ViewModelProviders.of(this, factory).get(BaseViewModel::class.java) as VM
         }
+    }
+
+    abstract fun getViewBindHolder(): ViewBindHolder?
+    open fun getViewBindAdapter(): ViewBindAdapter<VM, ViewBindHolder>? {
+        return null
     }
 }

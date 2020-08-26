@@ -1,7 +1,6 @@
 package com.laotang.quickdevcore.integration
 
 
-
 /**
  * ================================================
  * 用来管理网络请求层,以及数据缓存层,以后可能添加数据库请求层
@@ -41,5 +40,5 @@ interface IRepositoryManager {
      */
     fun clearAllCache()
 
-    fun <T> addRetrofitServiceProxy(service: Class<T>,serviceImpl:T)
+    fun <T> addRetrofitServiceProxy(service: Class<T>, serviceImpl: T)
 }

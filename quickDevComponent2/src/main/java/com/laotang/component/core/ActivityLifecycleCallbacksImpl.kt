@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 
-class ActivityLifecycleCallbacksImpl: Application.ActivityLifecycleCallbacks{
+class ActivityLifecycleCallbacksImpl : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         registerFragmentCallbacks(activity)

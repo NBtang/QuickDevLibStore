@@ -1,6 +1,6 @@
 package com.laotang.quickdevcore.di.module
 
-import android.app.Application
+import android.content.Context
 import android.text.TextUtils
 import com.laotang.quickdevcore.integration.cache.Cache
 import com.laotang.quickdevcore.integration.cache.CacheFactory
@@ -66,12 +66,12 @@ class GlobalConfigModule private constructor(builder: Builder){
         return url?:(mApiUrl ?: throw AssertionError("url empty"))
     }
 
-    fun provideCacheFile(application: Application): File {
-        return mCacheFile?:getCacheFile(application)
+    fun provideCacheFile(context: Context): File {
+        return mCacheFile?:getCacheFile(context)
     }
 
-    fun provideCacheFactory(application: Application): Cache.Factory{
-        return mCacheFactory?: CacheFactory(application)
+    fun provideCacheFactory(context: Context): Cache.Factory{
+        return mCacheFactory?: CacheFactory(context)
     }
 
     fun provideImageLoaderStrategy(): ImageLoaderStrategy<ImageConfig>? {

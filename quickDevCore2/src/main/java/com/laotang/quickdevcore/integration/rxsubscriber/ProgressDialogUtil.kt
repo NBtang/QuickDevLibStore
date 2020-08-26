@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference
 object ProgressDialogUtil {
     private var mWeakReference: WeakReference<ProgressDialog>? = null
 
-    internal fun getInstance(context: Context): ProgressDialog {
+    private fun getInstance(context: Context): ProgressDialog {
         val dialog = ProgressDialog(context)
         mWeakReference = WeakReference(dialog)
         return dialog

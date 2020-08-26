@@ -4,7 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 
-class ActivityLifecycle(internal val application: Application): Application.ActivityLifecycleCallbacks {
+class ActivityLifecycle(internal val application: Application) :
+    Application.ActivityLifecycleCallbacks {
 
     private val mAppManager = AppManager.instance
 

@@ -42,8 +42,8 @@ dependencies {
     api libs.rxpermissions
     api 'com.alibaba:arouter-api:1.5.0'
 
-    api 'com.laotang.quickdev:aretrofit:1.0.6'
-    api 'com.laotang.quickdev:arouter-calladapter:1.0.4'
+    compileOnly project(path: ':quickDevARetrofit')
+    compileOnly project(path: ':quickDevARouterCallAdapter')
 
     compileOnly project(path: ':quickDevCore2')
     kapt libs.jetpack_lifecycle_compiler
@@ -63,7 +63,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'component2'
-    libraryVersion = '1.1.0'
+    libraryVersion = '1.1.1'
 
     libraryName = 'quickcomponent'
     libraryDescription = ''

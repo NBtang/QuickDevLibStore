@@ -7,13 +7,13 @@ import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.Function
 
-class ResponseTransformer<T> :ObservableTransformer<BaseResponseBean<T>,T>{
+class ResponseTransformer<T> : ObservableTransformer<BaseResponseBean<T>, T> {
 
     override fun apply(upstream: Observable<BaseResponseBean<T>>): ObservableSource<T> {
         return upstream.flatMap { t ->
             if (t.success) {
                 Observable.just(t.data)
-            }else{
+            } else {
                 Observable.error(ServerException(t.message, t.code))
             }
         }

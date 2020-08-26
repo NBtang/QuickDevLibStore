@@ -1,7 +1,6 @@
 package com.laotang.quickdevcore.integration
 
 import android.app.Application
-import android.content.Context
 import android.content.res.Configuration
 import com.laotang.quickdevcore.base.delegate.AppLifecycle
 import com.laotang.quickdevcore.integration.http.utl.DefaultUrlParserEx
@@ -9,8 +8,6 @@ import es.dmoral.toasty.Toasty
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 
 class AppCoreLifecycle: AppLifecycle {
-    override fun attachBaseContext(base: Context) {
-    }
 
     override fun onCreate(application: Application) {
         DefaultUrlParserEx().apply {

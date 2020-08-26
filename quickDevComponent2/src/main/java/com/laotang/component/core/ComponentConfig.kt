@@ -32,16 +32,19 @@ class ComponentConfig private constructor(builder: Builder) {
         internal var enableDoraemonKit = true
         internal var aRetrofitConfiguration: ARetrofitConfiguration? = null
 
-        fun enableLeakCanary(enable: Boolean) {
+        fun enableLeakCanary(enable: Boolean):Builder {
             this.enableLeakCanary = enable
+            return this
         }
 
-        fun enableDoraemonKit(enable: Boolean) {
+        fun enableDoraemonKit(enable: Boolean):Builder {
             this.enableDoraemonKit = enable
+            return this
         }
 
-        fun setARetrofitConfiguration(aRetrofitConfiguration: ARetrofitConfiguration) {
+        fun setARetrofitConfiguration(aRetrofitConfiguration: ARetrofitConfiguration):Builder {
             this.aRetrofitConfiguration = aRetrofitConfiguration
+            return this
         }
 
         internal fun build(): ComponentConfig {

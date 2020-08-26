@@ -25,7 +25,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     public enum Level {
-        /** No logs. */
+        /**
+         * No logs.
+         */
         NONE,
         /**
          * Logs request and response lines.
@@ -83,9 +85,12 @@ public final class HttpLoggingInterceptor implements Interceptor {
     public interface Logger {
         void log(String url, String message);
 
-        /** A {@link Logger} defaults output appropriate for the current platform. */
+        /**
+         * A {@link Logger} defaults output appropriate for the current platform.
+         */
         Logger DEFAULT = new Logger() {
-            @Override public void log(String url, String message) {
+            @Override
+            public void log(String url, String message) {
                 Platform.get().log(INFO, message, null);
             }
         };
@@ -103,7 +108,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
     private volatile Level level = Level.NONE;
 
-    /** Change the level at which this interceptor logs. */
+    /**
+     * Change the level at which this interceptor logs.
+     */
     public HttpLoggingInterceptor setLevel(Level level) {
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
@@ -114,7 +121,8 @@ public final class HttpLoggingInterceptor implements Interceptor {
         return level;
     }
 
-    @Override public Response intercept(Chain chain) throws IOException {
+    @Override
+    public Response intercept(Chain chain) throws IOException {
         Level level = this.level;
 
         StringBuilder logInfo = new StringBuilder();
@@ -270,7 +278,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
             }
         }
 
-        logger.log(url,logInfo.toString());
+        logger.log(url, logInfo.toString());
 
         return response;
     }
