@@ -3,13 +3,8 @@
 
     <application>
         <activity
-            android:name=".RxARouterPortraitActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <activity
-            android:name=".RxARouterLandscapeActivity"
-            android:screenOrientation="landscape"
+            android:name=".RxARouterActivity"
+            android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 </manifest>

@@ -129,14 +129,8 @@ final class RxARouterCallAdapter<R> implements CallAdapter<R, Object> {
                 if(!(context instanceof FragmentActivity)){
                     throw new RuntimeException("context is not instanceof FragmentActivity");
                 }
-                Class<?> clazz;
-                if (((FragmentActivity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    clazz = RxARouterLandscapeActivity.class;
-                } else {
-                    clazz = RxARouterPortraitActivity.class;
-                }
                 RxActivityResult rxActivityResult = new RxActivityResult((FragmentActivity)context);
-                Intent intent = new Intent(context, clazz);
+                Intent intent = new Intent(context, RxARouterActivity.class);
                 intent.putExtra("relativeUrl",routerInfo.getRelativeUrl());
                 intent.putExtra("bundle",routerInfo.getBundle());
                 intent.putExtra("flags",routerInfo.getFlags());
