@@ -50,7 +50,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'aac'
-    libraryVersion = '1.0.2'
+    libraryVersion = '1.0.4'
 
     libraryName = 'quick-aac'
     libraryDescription = ''

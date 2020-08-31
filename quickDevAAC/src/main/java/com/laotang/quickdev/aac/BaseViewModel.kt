@@ -12,9 +12,9 @@ import org.kodein.di.Kodein
 
 open class BaseViewModel(application: Application, override val kodein: Kodein) :
     AndroidViewModel(application), IBaseViewModel {
-    private var mIntent: Intent? = null
+    protected var mIntent: Intent? = null
 
-    private lateinit var mLifecycleRegistry: LifecycleRegistry
+    private var mLifecycleRegistry: LifecycleRegistry? = null
 
     init {
         init()
@@ -29,32 +29,38 @@ open class BaseViewModel(application: Application, override val kodein: Kodein) 
     }
 
     override fun onCreate(owner: LifecycleOwner) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         owner.lifecycle.removeObserver(this)
     }
 
     override fun onStart(owner: LifecycleOwner) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
     }
 
     override fun onResume(owner: LifecycleOwner) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
     override fun onPause(owner: LifecycleOwner) {
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mIntent = null
+        mLifecycleRegistry = null
     }
 
     override fun getLifecycle(): Lifecycle {
-        return mLifecycleRegistry
+        return mLifecycleRegistry!!
     }
 
     private fun init() {
