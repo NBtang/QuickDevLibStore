@@ -1,5 +1,9 @@
 package com.laotang.quickdevcore.integration.http;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -191,7 +195,21 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
                 if (isPlaintext(buffer)) {
                     logInfo.append("\n");
-                    logInfo.append(buffer.readString(charset));
+                    String body = buffer.readString(charset);
+                    try {
+                        if (body.startsWith("{")) {
+                            JSONObject jsonObject = new JSONObject(body);
+                            String message = jsonObject.toString(2);
+                            logInfo.append(message);
+                        } else if (body.startsWith("[")) {
+                            JSONArray jsonArray = new JSONArray(body);
+                            String message = jsonArray.toString(2);
+                            logInfo.append(message);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        logInfo.append(body);
+                    }
                     logInfo.append("\n");
                     logInfo.append("--> END ").append(request.method()).append(" (").append(requestBody.contentLength()).append("-byte body)");
                 } else {
@@ -265,7 +283,21 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
                 if (contentLength != 0) {
                     logInfo.append("\n");
-                    logInfo.append(buffer.clone().readString(charset));
+                    String body = buffer.clone().readString(charset);
+                    try {
+                        if (body.startsWith("{")) {
+                            JSONObject jsonObject = new JSONObject(body);
+                            String message = jsonObject.toString(2);
+                            logInfo.append(message);
+                        } else if (body.startsWith("[")) {
+                            JSONArray jsonArray = new JSONArray(body);
+                            String message = jsonArray.toString(2);
+                            logInfo.append(message);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        logInfo.append(body);
+                    }
                 }
 
                 if (gzippedLength != null) {

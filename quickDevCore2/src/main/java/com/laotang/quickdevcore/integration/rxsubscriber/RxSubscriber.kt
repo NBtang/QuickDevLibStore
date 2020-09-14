@@ -12,7 +12,7 @@ import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import org.kodein.di.generic.instance
 
 abstract class RxSubscriber<T>(
-    private val lifecycleOwner: LifecycleOwner?=null,
+    private val lifecycleOwner: LifecycleOwner? = null,
     msg: String = "",
     showProgress: Boolean = true,
     cancelable: Boolean = true
@@ -26,7 +26,8 @@ abstract class RxSubscriber<T>(
 
     init {
         if (showProgress && msg.isNotEmpty()) {
-            progressObservable = mGlobalConfigModule.provideRxProgressConfiguration().provideRxProgressObservable(msg, cancelable)
+            progressObservable = mGlobalConfigModule.provideRxProgressConfiguration()
+                .provideRxProgressObservable(msg, cancelable)
         }
     }
 
@@ -35,13 +36,16 @@ abstract class RxSubscriber<T>(
         val instance = this
         //如果当前的生命周期状态为onCreated，使用getTopActivity获取activity
         //如果是其他生命周期状态，使用getCurrentActivity获取activity
-        val activity = if(lifecycleOwner == null){
+        val activity = if (lifecycleOwner == null) {
             AppManager.instance.getCurrentActivity()
-        }else{
-            if(lifecycleOwner.lifecycle.currentState == Lifecycle.State.CREATED
-                || lifecycleOwner.lifecycle.currentState == Lifecycle.State.INITIALIZED){
+        } else {
+            if (lifecycleOwner.lifecycle.currentState == Lifecycle.State.CREATED
+                || lifecycleOwner.lifecycle.currentState == Lifecycle.State.INITIALIZED
+                || lifecycleOwner.lifecycle.currentState == Lifecycle.State.STARTED
+            ) {
+                //AppManager.instance还未更新CurrentActivity
                 AppManager.instance.getTopActivity()
-            }else{
+            } else {
                 AppManager.instance.getCurrentActivity()
             }
         }
@@ -67,11 +71,15 @@ abstract class RxSubscriber<T>(
         dismissLoadingDialog()
     }
 
-    override fun onError(e: Throwable) {
+    final override fun onError(e: Throwable) {
         dismissLoadingDialog()
         e.printStackTrace()
-        //如果你某个地方不想使用全局错误处理,则重写 onError(Throwable) 并将 super.onError(e); 删掉
-        //如果你不仅想使用全局错误处理,还想加入自己的逻辑,则重写 onError(Throwable) 并在 super.onError(e); 后面加入自己的逻辑
+        _onError(e)
+    }
+
+    open fun _onError(e: Throwable) {
+        //如果你某个地方不想使用全局错误处理,则重写 _onError(Throwable) 并将 super._onError(e); 删掉
+        //如果你不仅想使用全局错误处理,还想加入自己的逻辑,则重写 _onError(Throwable) 并在 super._onError(e); 后面加入自己的逻辑
         mHandlerFactory.handleError(e)
     }
 

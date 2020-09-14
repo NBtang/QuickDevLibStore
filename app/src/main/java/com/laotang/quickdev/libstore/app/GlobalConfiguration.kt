@@ -10,6 +10,7 @@ import com.laotang.quickdev.libstore.app.factory.CustomViewModelFactory
 import com.laotang.quickdev.libstore.app.factory.JsonConverterFactory
 import com.laotang.quickdev.libstore.mvvm.model.repository.UserRepository
 import com.laotang.quickdev.libstore.mvvm.model.service.UserService
+import com.laotang.quickdev.logcat.LogcatLogger
 import com.laotang.quickdevcore.base.delegate.AppLifecycle
 import com.laotang.quickdevcore.di.module.AppModule
 import com.laotang.quickdevcore.di.module.ClientModule
@@ -59,6 +60,7 @@ class GlobalConfiguration : ConfigModule {
     }
 
     override fun injectAppLifecycle(context: Context, lifecycles: ArrayList<AppLifecycle>) {
+
     }
 
     override fun injectActivityLifecycle(
@@ -66,6 +68,7 @@ class GlobalConfiguration : ConfigModule {
         lifecycles: ArrayList<Application.ActivityLifecycleCallbacks>
     ) {
         lifecycles.add(ManifestDynamicAdapter())
+        lifecycles.add(LogcatLogger(context))
     }
 
     override fun injectKoDeinModule(context: Context, kodeinModules: ArrayList<Kodein.Module>) {

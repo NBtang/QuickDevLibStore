@@ -1,9 +1,7 @@
 apply plugin: 'com.android.library'
 
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-
 
 android {
     compileSdkVersion build_version.compileSdkVersion
@@ -38,116 +36,34 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    api libs.annotations
-    api (libs.support_v7){
-        exclude group: 'androidx.annotation'
-    }
+    compileOnly libs.support_v7
 
-    api libs.kotlin_stdlib
-    api libs.kotlin_coroutines //协程
+    compileOnly libs.kotlin_stdlib
 
-    api libs.jetpack_lifecycle_extensions
-    api libs.jetpack_lifecycle_java8
-    kapt libs.jetpack_lifecycle_compiler
-
-    api libs.jetpack_viewmodel
-    api libs.jetpack_livedata
-    api libs.jetpack_livedata_rx
-
-    // retrofit
-    api (libs.retrofit){
-        exclude module: 'okhttp'
-        exclude module: 'okio'
-    }
-    api (libs.retrofit_gson){
-        exclude module: 'gson'
-        exclude module: 'okhttp'
-        exclude module: 'okio'
-        exclude module: 'retrofit'
-    }
-    api (libs.retrofit_rxjava){
-        exclude module: 'rxjava'
-        exclude module: 'okhttp'
-        exclude module: 'retrofit'
-        exclude module: 'okio'
-    }
-    api ('com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'){
-        exclude module: 'retrofit'
-        exclude group: 'org.jetbrains.kotlinx'
-    }
-
-
-    // rx
-    api libs.rxkotlin
-    api (libs.rxandroid){
-        exclude module: 'rxjava'
-    }
-    api libs.rxrelay
-    api libs.rxerrorhandler2
-
-    api (libs.rxcache2) {
-        exclude module: 'rxjava'
-    }
-    implementation (libs.rxcache_jolyglot_gson) {
-        exclude module: 'gson'
-    }
-    api(libs.rxbinding) {
+    compileOnly libs.rxkotlin
+    compileOnly (libs.rxandroid){
         exclude module: 'rxjava'
     }
 
-    // autodispose
-    api (libs.autodispose){
-        exclude module: 'rxjava'
-    }
+    compileOnly libs.logger
 
-    api (libs.autodispose_archs_ktx){
-        exclude module: 'rxjava'
-        exclude module: 'rxandroid'
-    }
-
-    // kodein
-    api libs.kodein
-    api libs.kodein_android
-    api (libs.kodein_androidx){
-        exclude group: 'androidx.appcompat'
-    }
-
-    // okhttp
-    api libs.okhttp
-    api libs.okhttp_logging
-
-    api libs.gson
-
-    // logger
-    api libs.timber
-    api libs.logger
-
-    api libs.koi_core
-    api libs.koi_async
-
-    implementation libs.retrofit_url_manager
-
-    api 'com.github.GrenderG:Toasty:1.4.0'
-    api 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
-
-    api 'com.laotang.quickdev:localretrofit:1.0.3'
-    api 'com.laotang.quickdev:rx-activity-result:1.0.0'
-    api 'com.laotang.quickdev:eventsLogger:1.0.0'
+    compileOnly libs.recyclerview
+    compileOnly libs.baseRecyclerViewAdapter
 }
 
 ext {
     //bintray 网站上你创建的仓库的名字（必配项）
     bintrayRepo = 'maven'
     //在这个仓库下的 package name（必配项）
-    bintrayName = 'core2'
+    bintrayName = 'logcat-viewer'
 
     publishedGroupId = 'com.laotang.quickdev'
-    artifact = 'core2'
-    libraryVersion = '1.0.9'
+    artifact = 'logcat-viewer'
+    libraryVersion = '1.0.5'
 
-    libraryName = 'core2'
+    libraryName = 'logcat-viewer'
     libraryDescription = ''
     siteUrl = ''
     gitUrl = ''

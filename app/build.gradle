@@ -49,6 +49,7 @@ dependencies {
     implementation project(path: ':quickDevARouterCallAdapter')
     
     implementation project(path: ':quickExtKt2')
+    implementation project(path: ':LogcatLoggerAdapter')
 
     implementation project(path: ':quickDevLiveDataEventBus')
     implementation 'org.greenrobot:eventbus:3.2.0'

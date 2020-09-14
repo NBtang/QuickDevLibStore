@@ -27,8 +27,8 @@ class UserViewModel(application: Application) : BaseViewModel(application) {
                         onGetUsersLiveData.postValue(t.toString())
                     }
 
-                    override fun onError(e: Throwable) {
-                        super.onError(e)
+                    override fun _onError(e: Throwable) {
+                        super._onError(e)
                         onGetUsersLiveData.postValue(e.message)
                     }
                 })
