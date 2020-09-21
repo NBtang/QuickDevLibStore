@@ -31,8 +31,8 @@ class LogcatLogger(context: Context, logAdapter: LogAdapter? = null) :
             if (it.isNotEmpty()) {
                 File(it).let { logCacheDir ->
                     if (logCacheDir.exists() && logCacheDir.listFiles().isNotEmpty()) {
-                        logCacheDir.list().forEach { filePath ->
-                            File(filePath).delete()
+                        logCacheDir.list().forEach { fileName ->
+                            File(logCacheDir,fileName).delete()
                         }
                     }
                 }

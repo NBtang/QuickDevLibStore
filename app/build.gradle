@@ -39,6 +39,7 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation libs.recyclerview
+    implementation libs.baseRecyclerViewAdapter
 
     implementation project(path: ':quickDevCore2')
     implementation project(path: ':quickDevComponent2')

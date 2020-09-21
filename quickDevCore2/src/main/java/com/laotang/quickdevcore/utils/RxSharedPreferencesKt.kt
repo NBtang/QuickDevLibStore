@@ -30,14 +30,6 @@ object RxPreferences {
         getString(key).set(value)
     }
 
-    inline fun <reified T> setObject(key: String, value: T) {
-        getObject<T>(key).set(value)
-    }
-
-    inline fun <reified T> setArrayObject(key: String, value: List<T>) {
-        getArrayObject<T>(key).set(value)
-    }
-
     fun getBoolean(key: String, defaultValue: Boolean = false): Preference<Boolean> {
         return getRxPreferences().getBoolean(key, defaultValue)
     }
@@ -58,17 +50,7 @@ object RxPreferences {
         return getRxPreferences().getString(key, defaultValue)
     }
 
-    inline fun <reified T> getObject(key: String): Preference<T> {
-        val rxPreferences by rootKodein().instance<RxSharedPreferences>()
-        return rxPreferences.getObjectEx(key)
-    }
-
-    inline fun <reified T> getArrayObject(key: String): Preference<List<T>> {
-        val rxPreferences by rootKodein().instance<RxSharedPreferences>()
-        return rxPreferences.getArrayObjectEx(key)
-    }
-
-    private fun getRxPreferences(): RxSharedPreferences {
+    fun getRxPreferences(): RxSharedPreferences {
         if (rxPreferences == null) {
             val rxPreferences by rootKodein().instance<RxSharedPreferences>()
             this.rxPreferences = rxPreferences
@@ -77,34 +59,15 @@ object RxPreferences {
     }
 }
 
-inline fun <reified T> RxSharedPreferences.getObjectEx(
+inline fun <reified T> RxPreferences.setObject(key: String, value: T) {
+    getObject<T>(key).set(value)
+}
+
+inline fun <reified T> RxPreferences.getObject(
     key: String,
     defaultValue: T? = null
 ): Preference<T> {
     val gson by rootKodein().instance<Gson>()
     val default = defaultValue ?: gson.fromJson<T>("{}", T::class.java)
-    return this.getObject(key, default, RxPreferenceConverter(T::class.java))
-}
-
-inline fun <reified T> RxSharedPreferences.getArrayObjectEx(
-    key: String,
-    defaultValue: List<T>? = null
-): Preference<List<T>> {
-    val gson by rootKodein().instance<Gson>()
-    val type = object : ParameterizedType {
-        override fun getRawType(): Type {
-            return List::class.java
-        }
-
-        override fun getOwnerType(): Type? {
-            return null
-        }
-
-        override fun getActualTypeArguments(): Array<Type> {
-            return arrayOf(T::class.java)
-        }
-
-    }
-    val default = defaultValue ?: gson.fromJson<List<T>>("[]", type)
-    return this.getObject<List<T>>(key, default, RxPreferenceConverter(type))
+    return getRxPreferences().getObject<T>(key, default, RxPreferenceConverter(T::class.java, gson))
 }

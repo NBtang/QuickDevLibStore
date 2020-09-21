@@ -19,13 +19,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btnMain.observe(this) {
-//            ActivityRouter.startSecondActivity(this)
-            EventBus.getDefault().post("test")
+            ActivityRouter.startSecondActivity(this)
+//            EventBus.getDefault().post("test")
 
         }
 
         LiveDataEventBus.toLiveData(this, MutableLiveData<String>()).observe(this, Observer {
-            it
+//            it
         })
     }
 }

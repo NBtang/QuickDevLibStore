@@ -145,7 +145,7 @@ ext {
 
     publishedGroupId = 'com.laotang.quickdev'
     artifact = 'core2'
-    libraryVersion = '1.0.9'
+    libraryVersion = '1.0.10'
 
     libraryName = 'core2'
     libraryDescription = ''

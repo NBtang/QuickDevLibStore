@@ -3,6 +3,7 @@ package com.laotang.quickdev.libstore.mvvm.model.repository
 import com.laotang.quickdev.libstore.mvvm.model.entity.User
 import com.laotang.quickdev.libstore.mvvm.model.service.UserService
 import com.laotang.quickdevcore.utils.RxPreferences
+import com.laotang.quickdevcore.utils.getObject
 import com.laotang.quickext.ioToUI
 import io.reactivex.Observable
 import kotlin.random.Random
